@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banco de Dados Pessoais</title>
+  <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/2906/2906274.png" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
+    rel="stylesheet">
+</head>
+<style>
+  body {
+    background: linear-gradient(to bottom, #000000, #2a004d, #660166);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    text-align: center;
+    font-family: "Lato", sans-serif;
+    color: white;
+  }
+
+  .card {
+    border: 2px solid white;
+    padding: 15px;
+    margin: 15px;
+    width: 210px;
+    display: inline-block;
+    text-align: center;
+    transition: transform 0.3s ease;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .card:hover {
+    transform: scale(1.05);
+    z-index: 1;
+  }
+
+  h1 {
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    color: blueviolet;
+  }
+
+  button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #ffffff;
+    color: blueviolet;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  button:hover {
+    background-color: blueviolet;
+    color: white;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  .box {
+    display: block;
+    unicode-bidi: isolate;
+
+  }
+
+  .box input {
+    padding: 10px;
+    width: 300px;
+    font-size: 16px;
+    border-radius: 10px;
+    border-color: blueviolet;
+  }
+
+  .card.selected {
+    background-color: #433150;
+    color: wheat;
+    border-color: wheat;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  h2 {
+    color: blueviolet;
+  }
+</style>
+
+<body>
+  <h1>Banco de Dados Pessoais</h1>
+  <h2>Seja bem-vindo(a)</h2>
+  <button onclick="logout()">Sair</button>
+  <br>
+  <div class="box">
+    <input type="text" id="search" placeholder="Pesquisar por nome ou país" style="text-align: center;"
+      onkeyup="searchPeople()">
+  </div>
+  <br><br>
+  <div id="container"></div>
+
+  <script>
+
+    // Função para sair (logout)
+    function logout() {
+      localStorage.removeItem("usuarioEmail");
+      localStorage.removeItem("dadosUsuarios"); // opcional: limpa também os cards
+      window.location.href = "index.html";
+    }
+
+    // Função que renderiza os cards na tela
+    function renderizarCards(usuarios) {
+      const container = document.getElementById('container');
+      container.innerHTML = ''; // limpa cards antigos
+
+      usuarios.forEach(user => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+              <img src="${user.picture.large}" alt="Foto">
+              <h3>Nome:<br>${user.name.first} ${user.name.last}</h3>
+              <p>País: ${user.location.country}</p>
+              <p>Login: ${user.login.username}</p>
+            `;
+        card.addEventListener('click', () => {
+          card.classList.toggle('selected');
+        });
+        container.appendChild(card);
+      });
+    }
+
+    // Função que busca os dados da API e salva no storage
+    function adicionarCard() {
+      fetch('https://randomuser.me/api/?results=20')
+        .then(response => {
+          if (!response.ok) throw new Error('Erro ao buscar dados da API');
+          return response.json();
+        })
+        .then(data => {
+          localStorage.setItem("dadosUsuarios", JSON.stringify(data.results));
+          renderizarCards(data.results);
+        })
+        .catch(error => console.error(error));
+    }
+
+    // Verifica se já existem dados no localStorage
+    const dadosSalvos = localStorage.getItem("dadosUsuarios");
+
+    if (dadosSalvos) {
+      const usuarios = JSON.parse(dadosSalvos);
+      renderizarCards(usuarios);
+    } else {
+      adicionarCard();
+    }
+
+    // Função que aplica o filtro de pesquisa
+    function searchPeople() {
+      const searchValue = document.getElementById('search').value.toLowerCase();
+      const usuarios = JSON.parse(localStorage.getItem("dadosUsuarios"));
+      const filteredUsers = usuarios.filter(user => {
+        return user.name.first.toLowerCase().includes(searchValue) ||
+          user.location.country.toLowerCase().includes(searchValue);
+      });
+      renderizarCards(filteredUsers);
+    }
+  </script>
+</body>
+
+</html>

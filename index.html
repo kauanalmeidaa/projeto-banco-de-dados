@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/2906/2906274.png" type="image/x-icon">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to top, #590083, #000000);
+      background-repeat: no-repeat;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .login-container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    input[type="email"], input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #690061;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #000000;
+    }
+
+    #errorMsg {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="E-mail">
+    <input type="password" id="senha" placeholder="Senha">
+    <button onclick="validacaoLogin()">Entrar</button>
+    <p class="error" id="errorMsg"></p>
+  </div>
+
+  <script>
+    const validacaoLogin = () => {
+      const email = document.getElementById('email').value
+      const senha = document.getElementById('senha').value
+      const errorMsg = document.getElementById('errorMsg')
+
+      const validEmail = 'admin@email.com'
+      const validPassword = '123456'
+
+      if (email === validEmail && senha === validPassword) {
+        errorMsg.innerHTML = 'Login efetuado com sucesso!'
+        errorMsg.style.color = 'green'
+
+        setTimeout(() => {
+          window.location.href = "cardsapi.html"
+        }, 1000)
+      } else {
+        errorMsg.innerHTML = 'E-mail ou senha inválidos'
+        errorMsg.style.color = 'red'
+      }
+    }
+  </script>
+</body>
+</html>
