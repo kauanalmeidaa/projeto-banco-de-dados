@@ -1,2 +1,2 @@
 # projeto-banco-de-dados
-Projeto
+Projeto realizado por: Elias, Paulo e Kauan
